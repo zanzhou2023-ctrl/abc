@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>银行流水关联匹配 - 需求规格</title>
+<style>
+:root{--blue:#4A90E2;--blue-l:#EBF5FF;--gray:#F5F7FA;--border:#E8E8E8;--text:#333;--sub:#999}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#fff;color:var(--text);line-height:1.8;padding:40px 60px;max-width:860px;margin:0 auto}
+h1{font-size:22px;border-left:4px solid var(--blue);padding-left:12px;margin-bottom:4px}
+.meta{color:var(--sub);font-size:13px;margin-bottom:28px;padding-left:16px}
+h2{font-size:16px;color:var(--blue);margin:24px 0 10px;padding-bottom:4px;border-bottom:1.5px solid var(--border)}
+h3{font-size:14px;color:#555;margin:14px 0 8px}
+p{font-size:13.5px;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13px}
+th{background:var(--blue);color:#fff;padding:5px 10px;text-align:left;font-weight:500}
+td{padding:5px 10px;border-bottom:1px solid var(--border)}
+tr:nth-child(even){background:var(--gray)}
+.card{background:var(--blue-l);border-left:3px solid var(--blue);padding:8px 14px;border-radius:0 4px 4px 0;margin:8px 0;font-size:13px}
+.example{background:#FFFDE7;border:1px solid #FFF9C4;border-radius:4px;padding:10px 14px;font-size:12.5px;margin:8px 0}
+.param{background:var(--gray);border:1px solid var(--border);padding:1px 6px;border-radius:3px;font-size:12px;font-family:Consolas,monospace}
+.sep{border:none;border-top:1px dashed #ddd;margin:20px 0}
+.fc-wrap{overflow-x:auto;margin:12px 0}
+</style>
+</head>
+<body>
+
+<h1>银行流水关联匹配</h1>
+<div class="meta">需求规格 · 出纳模块 · 2026-10-16</div>
+
+<h2>1. 背景与目标</h2>
+<p>银行间转账会在转出方和转入方各产生一条流水，导入后彼此独立、分别生成凭证，导致财务账重复。</p>
+<div class="card"><strong>目标：</strong>保存或导入流水后，系统自动识别同一笔转账的两条流水并标记关联，避免重复记账。</div>
+
+<h2>2. 匹配条件</h2>
+<p>两条流水<strong>同时满足</strong>以下条件即判定为关联：</p>
+<table>
+<tr><th style="width:30px">#</th><th style="width:100px">条件</th><th>说明</th></tr>
+<tr><td>1</td><td><strong>金额相等</strong></td><td>金额绝对值完全一致</td></tr>
+<tr><td>2</td><td><strong>方向相反</strong></td><td>一条收入，一条支出</td></tr>
+<tr><td>3</td><td><strong>账号交叉</strong></td><td>A的对方账号 = B的账户账号，且B的对方账号 = A的账户账号</td></tr>
+<tr><td>4</td><td><strong>日期相同</strong></td><td>记账日期为同一天</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--sub)">已关联的流水不参与后续匹配。</p>
+
+<h2>3. 匹配流程</h2>
+<div class="fc-wrap">
+<svg width="700" height="210" viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="12">
+<defs>
+  <marker id="ah" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#4A90E2"/></marker>
+  <marker id="ahg" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#999"/></marker>
+  <marker id="aho" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#F5A623"/></marker>
+</defs>
+
+<!-- 主流程 y=110 -->
+<rect x="10" y="90" width="88" height="40" rx="20" fill="#4A90E2" stroke="#357ABD"/>
+<text x="54" y="115" text-anchor="middle" fill="#fff" font-weight="500">保存/导入</text>
+
+<line x1="98" y1="110" x2="128" y2="110" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
+
+<polygon points="178,70 223,110 178,150 133,110" fill="#EBF5FF" stroke="#4A90E2" stroke-width="1.5"/>
+<text x="178" y="106" text-anchor="middle" font-size="11">对方账号∈</text>
+<text x="178" y="120" text-anchor="middle" font-size="11">银行账户?</text>
+
+<line x1="178" y1="70" x2="178" y2="38" stroke="#999" stroke-width="1.5" marker-end="url(#ahg)"/>
+<text x="186" y="58" fill="#999" font-size="10">否</text>
+<rect x="146" y="14" width="64" height="24" rx="12" fill="#f0f0f0" stroke="#bbb"/>
+<text x="178" y="31" text-anchor="middle" fill="#666" font-size="11">不关联</text>
+
+<line x1="223" y1="110" x2="258" y2="110" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="241" y="104" text-anchor="middle" fill="#999" font-size="10">是</text>
+
+<rect x="263" y="88" width="150" height="44" rx="4" fill="#fff" stroke="#4A90E2" stroke-width="1.5"/>
+<text x="338" y="106" text-anchor="middle" font-size="11">查找未关联流水</text>
+<text x="338" y="122" text-anchor="middle" fill="#999" font-size="10">同日 + 反向 + 同金额</text>
+
+<line x1="413" y1="110" x2="448" y2="110" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
+
+<polygon points="498,70 543,110 498,150 453,110" fill="#EBF5FF" stroke="#4A90E2" stroke-width="1.5"/>
+<text x="498" y="107" text-anchor="middle" font-size="11">找到</text>
+<text x="498" y="121" text-anchor="middle" font-size="11">几笔?</text>
+
+<line x1="498" y1="70" x2="498" y2="38" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="506" y="58" fill="#999" font-size="10">1笔</text>
+<rect x="453" y="14" width="90" height="26" rx="13" fill="#E8F5E9" stroke="#43A047"/>
+<text x="498" y="32" text-anchor="middle" fill="#2E7D32" font-weight="500" font-size="12">自动关联</text>
+
+<line x1="498" y1="150" x2="498" y2="176" stroke="#F5A623" stroke-width="1.5" marker-end="url(#aho)"/>
+<text x="506" y="168" fill="#999" font-size="10">多笔</text>
+<rect x="453" y="180" width="90" height="26" rx="4" fill="#FFF3E0" stroke="#F5A623"/>
+<text x="498" y="198" text-anchor="middle" fill="#E65100" font-weight="500">进入消歧</text>
+
+<line x1="543" y1="110" x2="578" y2="110" stroke="#999" stroke-width="1.5" marker-end="url(#ahg)"/>
+<text x="560" y="104" text-anchor="middle" fill="#999" font-size="10">0笔</text>
+<rect x="583" y="98" width="64" height="24" rx="12" fill="#f0f0f0" stroke="#bbb"/>
+<text x="615" y="115" text-anchor="middle" fill="#666" font-size="11">不关联</text>
+
+</svg>
+</div>
+
+<h3>多笔消歧</h3>
+<table>
+<tr><th style="width:30px">#</th><th style="width:120px">条件</th><th>处理</th></tr>
+<tr><td>1</td><td>双方均有时间（时分秒）</td><td>按时间最相近匹配</td></tr>
+<tr><td>2</td><td>任一方无时间</td><td>按【摘要】【备注】关键字匹配度择优</td></tr>
+<tr><td>3</td><td>以上均无法确定</td><td>按先后顺序匹配第一笔</td></tr>
+</table>
+
+<h2>4. 示例</h2>
+<p style="font-size:12.5px;color:var(--sub)">匹配在流水<strong>保存或导入完成后</strong>自动触发。</p>
+<div class="example">
+<table>
+<tr><th>账户</th><th>账户账号</th></tr>
+<tr><td>工行2224</td><td>310008261920100<strong>2224</strong></td></tr>
+<tr><td>招行8921</td><td>310008212902454<strong>8921</strong></td></tr>
+</table>
+
+<p style="margin-top:10px"><strong>工行2224 流水：</strong></p>
+<table>
+<tr><th>日期</th><th>收入</th><th>支出</th><th>对方账号</th></tr>
+<tr><td>2026-07-24</td><td></td><td>202,000.00</td><td><span class="param">…8921</span></td></tr>
+</table>
+
+<p style="margin-top:10px"><strong>招行8921 流水：</strong></p>
+<table>
+<tr><th>日期</th><th>收入</th><th>支出</th><th>对方账号</th></tr>
+<tr><td>2026-07-24</td><td>202,000.00</td><td></td><td><span class="param">…2224</span></td></tr>
+</table>
+
+<p style="margin-top:10px">
+金额 202,000 = 202,000 ✓ &nbsp;
+方向 支出↔收入 ✓ &nbsp;
+账号交叉 ✓ &nbsp;
+同日 ✓ &nbsp;
+→ <strong>自动关联</strong>
+</p>
+</div>
+
+<h2>5. 边界场景</h2>
+<table>
+<tr><th style="width:150px">场景</th><th>处理</th></tr>
+<tr><td>对方账号缺失</td><td>不满足账号交叉，不自动匹配</td></tr>
+<tr><td>已关联流水被删除</td><td>对手流水自动回退为未关联</td></tr>
+<tr><td>跨日到账</td><td>日期不同不匹配</td></tr>
+</table>
+
+<hr class="sep">
+<p style="font-size:12px;color:var(--sub);text-align:right">— 文档结束 —</p>
+
+</body>
+</html>
