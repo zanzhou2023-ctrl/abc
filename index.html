@@ -49,6 +49,44 @@ tr:nth-child(even){background:var(--gray)}
 <img src="flowchart.png" alt="银行流水关联匹配流程图" style="max-width:100%;height:auto">
 </div>
 
+<h3>处理逻辑</h3>
+<ol style="font-size:13px;line-height:2;padding-left:22px">
+<li value="2">判断是【是否存在（对方账号∈银行账户）】
+  <ol style="list-style:none;padding-left:18px;margin:2px 0">
+  <li>2.1 否。——结束。无需处理关联。</li>
+  <li>2.2 是。记录这些流水的【日期、己方账号、对方账号、收入/支出金额、是否已经关联、凭证字号、摘要、备注】<br>
+  <span style="color:var(--sub);font-size:12px">说明：由于这些记录是刚保存的，所以这些记录的【未关联、未生成凭证】</span></li>
+  </ol>
+</li>
+<li value="3">逐一针对某笔具体的银行账户流水处理，查找未关联流水
+  <ol style="list-style:none;padding-left:18px;margin:2px 0">
+  <li>3.1 查找对方【日期、对方账号、支出/收入金额、未关联】相同的记录有几笔
+    <ol style="list-style:none;padding-left:18px;margin:2px 0">
+    <li>3.1.1 查找对方【日期、对方账号、支出/收入金额、未关联】相同的记录有0笔——结束。无需处理关联。</li>
+    <li>3.1.2 查找对方【日期、对方账号、支出/收入金额、未关联】相同的记录有1笔
+      <ol style="list-style:none;padding-left:18px;margin:2px 0">
+      <li>3.1.2.1 查找己方【日期、对方账号、支出/收入金额、未关联】相同的记录有1笔——匹配关系，更新凭证字号（若对方已生成凭证）</li>
+      <li>3.1.2.2 查找己方【日期、对方账号、支出/收入金额、未关联】相同的记录有＞1笔——结束。暂不关联。</li>
+      </ol>
+    </li>
+    <li>3.1.3 查找对方【日期、对方账号、支出/收入金额、未关联】相同的记录有＞1笔
+      <ol style="list-style:none;padding-left:18px;margin:2px 0">
+      <li>3.1.3.1 对方记录数≠己方记录数——结束。暂不关联</li>
+      <li>3.1.3.2 对方记录数=己方记录数
+        <ol style="list-style:none;padding-left:18px;margin:2px 0">
+        <li>3.1.3.2.1 己方全部未生成凭证——（按时间/关键字/先后顺序）匹配关系，更新凭证字号（若对方已生成凭证）</li>
+        <li>3.1.3.2.2 对方全部未生成凭证——（按时间/关键字/先后顺序）匹配关系，更新凭证字号（若己方已生成凭证）</li>
+        <li>3.1.3.2.3 己方和对方都存在已生成凭证——结束。暂不关联。</li>
+        </ol>
+      </li>
+      </ol>
+    </li>
+    </ol>
+  </li>
+  </ol>
+</li>
+</ol>
+
 <h3>多笔消歧</h3>
 <table>
 <tr><th style="width:30px">#</th><th style="width:120px">条件</th><th>处理</th></tr>
