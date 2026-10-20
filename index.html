@@ -45,72 +45,75 @@ tr:nth-child(even){background:var(--gray)}
 
 <h2>3. 匹配流程</h2>
 <div class="fc-wrap">
-<svg width="700" height="210" viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="12">
+<svg width="780" height="260" viewBox="0 0 780 260" xmlns="http://www.w3.org/2000/svg" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="12">
 <defs>
   <marker id="ah" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#4A90E2"/></marker>
   <marker id="ahg" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#999"/></marker>
   <marker id="aho" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#F5A623"/></marker>
 </defs>
 
-<!-- 主流程 y=110 -->
-<rect x="10" y="90" width="88" height="40" rx="20" fill="#4A90E2" stroke="#357ABD"/>
-<text x="54" y="115" text-anchor="middle" fill="#fff" font-weight="500">保存/导入</text>
+<!-- ══ 主流程 y=140 ══ -->
+<rect x="10" y="120" width="88" height="40" rx="20" fill="#4A90E2" stroke="#357ABD"/>
+<text x="54" y="145" text-anchor="middle" fill="#fff" font-weight="500">保存/导入</text>
 
-<line x1="98" y1="110" x2="128" y2="110" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="98" y1="140" x2="128" y2="140" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
 
-<polygon points="178,70 223,110 178,150 133,110" fill="#EBF5FF" stroke="#4A90E2" stroke-width="1.5"/>
-<text x="178" y="106" text-anchor="middle" font-size="11">对方账号∈</text>
-<text x="178" y="120" text-anchor="middle" font-size="11">银行账户?</text>
+<!-- Diamond 1 -->
+<polygon points="178,100 223,140 178,180 133,140" fill="#EBF5FF" stroke="#4A90E2" stroke-width="1.5"/>
+<text x="178" y="136" text-anchor="middle" font-size="11">对方账号∈</text>
+<text x="178" y="150" text-anchor="middle" font-size="11">银行账户?</text>
 
-<line x1="178" y1="70" x2="178" y2="38" stroke="#999" stroke-width="1.5" marker-end="url(#ahg)"/>
-<text x="186" y="58" fill="#999" font-size="10">否</text>
-<rect x="146" y="14" width="64" height="24" rx="12" fill="#f0f0f0" stroke="#bbb"/>
-<text x="178" y="31" text-anchor="middle" fill="#666" font-size="11">不关联</text>
+<line x1="178" y1="100" x2="178" y2="68" stroke="#999" stroke-width="1.5" marker-end="url(#ahg)"/>
+<text x="186" y="88" fill="#999" font-size="10">否</text>
+<rect x="146" y="44" width="64" height="24" rx="12" fill="#f0f0f0" stroke="#bbb"/>
+<text x="178" y="61" text-anchor="middle" fill="#666" font-size="11">不关联</text>
 
-<line x1="223" y1="110" x2="258" y2="110" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="241" y="104" text-anchor="middle" fill="#999" font-size="10">是</text>
+<line x1="223" y1="140" x2="258" y2="140" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="241" y="134" text-anchor="middle" fill="#999" font-size="10">是</text>
 
-<rect x="263" y="88" width="150" height="44" rx="4" fill="#fff" stroke="#4A90E2" stroke-width="1.5"/>
-<text x="338" y="106" text-anchor="middle" font-size="11">查找未关联流水</text>
-<text x="338" y="122" text-anchor="middle" fill="#999" font-size="10">同日 + 反向 + 同金额</text>
+<rect x="263" y="118" width="150" height="44" rx="4" fill="#fff" stroke="#4A90E2" stroke-width="1.5"/>
+<text x="338" y="136" text-anchor="middle" font-size="11">查找未关联流水</text>
+<text x="338" y="152" text-anchor="middle" fill="#999" font-size="10">同日 + 反向 + 同金额</text>
 
-<line x1="413" y1="110" x2="448" y2="110" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="413" y1="140" x2="448" y2="140" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
 
-<polygon points="498,70 543,110 498,150 453,110" fill="#EBF5FF" stroke="#4A90E2" stroke-width="1.5"/>
-<text x="498" y="107" text-anchor="middle" font-size="11">找到</text>
-<text x="498" y="121" text-anchor="middle" font-size="11">几笔?</text>
+<!-- Diamond 2 -->
+<polygon points="498,100 543,140 498,180 453,140" fill="#EBF5FF" stroke="#4A90E2" stroke-width="1.5"/>
+<text x="498" y="137" text-anchor="middle" font-size="11">找到</text>
+<text x="498" y="151" text-anchor="middle" font-size="11">几笔?</text>
 
-<!-- 双方各仅1笔 → 凭证检查 -->
-<line x1="498" y1="70" x2="498" y2="56" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="504" y="67" fill="#999" font-size="9">双方各仅1笔</text>
+<!-- ══ 0笔 → 不关联 ══ -->
+<line x1="543" y1="140" x2="578" y2="140" stroke="#999" stroke-width="1.5" marker-end="url(#ahg)"/>
+<text x="560" y="134" text-anchor="middle" fill="#999" font-size="10">0笔</text>
+<rect x="583" y="128" width="64" height="24" rx="12" fill="#f0f0f0" stroke="#bbb"/>
+<text x="615" y="145" text-anchor="middle" fill="#666" font-size="11">不关联</text>
+
+<!-- ══ 双方各仅1笔 ↑ → 凭证检查 ══ -->
+<line x1="498" y1="100" x2="498" y2="88" stroke="#4A90E2" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="462" y="97" text-anchor="end" fill="#999" font-size="10">双方各仅1笔</text>
 
 <!-- Diamond 3: 均未生成凭证? -->
-<polygon points="498,30 516,44 498,58 480,44" fill="#EBF5FF" stroke="#4A90E2" stroke-width="1.2"/>
-<text x="498" y="42" text-anchor="middle" font-size="8.5">均未生成</text>
-<text x="498" y="52" text-anchor="middle" font-size="8.5">凭证?</text>
+<polygon points="498,48 520,68 498,88 476,68" fill="#EBF5FF" stroke="#4A90E2" stroke-width="1.2"/>
+<text x="498" y="65" text-anchor="middle" font-size="9">均未生成</text>
+<text x="498" y="76" text-anchor="middle" font-size="9">凭证?</text>
 
 <!-- 是 ↑ → 自动关联 -->
-<line x1="498" y1="30" x2="498" y2="20" stroke="#4A90E2" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="505" y="29" fill="#999" font-size="9">是</text>
-<rect x="453" y="0" width="90" height="22" rx="11" fill="#E8F5E9" stroke="#43A047"/>
-<text x="498" y="15" text-anchor="middle" fill="#2E7D32" font-weight="500" font-size="11">自动关联</text>
+<line x1="498" y1="48" x2="498" y2="32" stroke="#4A90E2" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="506" y="44" fill="#999" font-size="9">是</text>
+<rect x="453" y="6" width="90" height="26" rx="13" fill="#E8F5E9" stroke="#43A047"/>
+<text x="498" y="24" text-anchor="middle" fill="#2E7D32" font-weight="500" font-size="12">自动关联</text>
 
 <!-- 否 ↓ → 不关联 -->
-<line x1="498" y1="58" x2="498" y2="78" stroke="#999" stroke-width="1.2" marker-end="url(#ahg)"/>
-<text x="505" y="73" fill="#999" font-size="9">否</text>
-<rect x="468" y="80" width="62" height="20" rx="10" fill="#f0f0f0" stroke="#bbb"/>
-<text x="499" y="94" text-anchor="middle" fill="#666" font-size="10">不关联</text>
-<text x="499" y="112" text-anchor="middle" fill="#999" font-size="8">任一方已生成凭证</text>
+<line x1="520" y1="68" x2="556" y2="68" stroke="#999" stroke-width="1.2" marker-end="url(#ahg)"/>
+<text x="538" y="62" text-anchor="middle" fill="#999" font-size="9">否</text>
+<rect x="561" y="56" width="105" height="24" rx="12" fill="#f0f0f0" stroke="#bbb"/>
+<text x="613" y="73" text-anchor="middle" fill="#666" font-size="10">不关联(已生成凭证)</text>
 
-<line x1="498" y1="150" x2="498" y2="176" stroke="#F5A623" stroke-width="1.5" marker-end="url(#aho)"/>
-<text x="506" y="168" fill="#999" font-size="10">任一方≥2笔</text>
-<rect x="453" y="180" width="90" height="26" rx="4" fill="#FFF3E0" stroke="#F5A623"/>
-<text x="498" y="198" text-anchor="middle" fill="#E65100" font-weight="500">进入消歧</text>
-
-<line x1="543" y1="110" x2="578" y2="110" stroke="#999" stroke-width="1.5" marker-end="url(#ahg)"/>
-<text x="560" y="104" text-anchor="middle" fill="#999" font-size="10">0笔</text>
-<rect x="583" y="98" width="64" height="24" rx="12" fill="#f0f0f0" stroke="#bbb"/>
-<text x="615" y="115" text-anchor="middle" fill="#666" font-size="11">不关联</text>
+<!-- ══ 任一方≥2笔 ↓ → 消歧 ══ -->
+<line x1="498" y1="180" x2="498" y2="208" stroke="#F5A623" stroke-width="1.5" marker-end="url(#aho)"/>
+<text x="506" y="198" fill="#999" font-size="10">任一方≥2笔</text>
+<rect x="445" y="212" width="106" height="28" rx="4" fill="#FFF3E0" stroke="#F5A623"/>
+<text x="498" y="231" text-anchor="middle" fill="#E65100" font-weight="500" font-size="11">进入消歧</text>
 
 </svg>
 </div>
