@@ -2,15 +2,16 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>银行流水关联匹配 - 需求规格</title>
+<title>银行流水关联匹配 - 需求规格说明书 V1.0</title>
 <style>
-:root{--blue:#4A90E2;--blue-l:#EBF5FF;--gray:#F5F7FA;--border:#E8E8E8;--text:#333;--sub:#999}
+:root{--blue:#4A90E2;--blue-l:#EBF5FF;--gray:#F5F7FA;--border:#E8E8E8;--text:#333;--sub:#999;--heading:#1F3864}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#fff;color:var(--text);line-height:1.8;padding:40px 60px;max-width:860px;margin:0 auto}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#fff;color:var(--text);line-height:1.8;padding:40px 60px;max-width:900px;margin:0 auto}
 h1{font-size:22px;border-left:4px solid var(--blue);padding-left:12px;margin-bottom:4px}
 .meta{color:var(--sub);font-size:13px;margin-bottom:28px;padding-left:16px}
-h2{font-size:16px;color:var(--blue);margin:24px 0 10px;padding-bottom:4px;border-bottom:1.5px solid var(--border)}
-h3{font-size:14px;color:#555;margin:14px 0 8px}
+h2{font-size:16px;color:var(--heading);margin:28px 0 10px;padding-bottom:4px;border-bottom:1.5px solid var(--border)}
+h3{font-size:14px;color:#555;margin:18px 0 8px}
+h4{font-size:13px;color:#666;margin:14px 0 6px}
 p{font-size:13.5px;margin-bottom:8px}
 table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13px}
 th{background:var(--blue);color:#fff;padding:5px 10px;text-align:left;font-weight:500}
@@ -20,60 +21,78 @@ tr:nth-child(even){background:var(--gray)}
 .example{background:#FFFDE7;border:1px solid #FFF9C4;border-radius:4px;padding:10px 14px;font-size:12.5px;margin:8px 0}
 .param{background:var(--gray);border:1px solid var(--border);padding:1px 6px;border-radius:3px;font-size:12px;font-family:Consolas,monospace}
 .sep{border:none;border-top:1px dashed #ddd;margin:20px 0}
-.fc-wrap{overflow-x:auto;margin:12px 0}
+.fc-wrap{overflow-x:auto;margin:12px 0;text-align:center}
+.logic-block{font-size:13px;line-height:2;padding-left:22px}
+.logic-block li{margin-bottom:2px}
+.logic-sub{list-style:none;padding-left:18px;margin:2px 0}
+.note{color:var(--sub);font-size:12px}
+.tag{display:inline-block;background:var(--blue);color:#fff;font-size:11px;padding:1px 8px;border-radius:3px;margin-right:6px}
+.rev-table th{font-size:12px}
+.rev-table td{font-size:12px}
 </style>
 </head>
 <body>
 
-<h1>银行流水关联匹配</h1>
-<div class="meta">需求规格 · 出纳模块 · 2026-10-16</div>
+<h1>银行流水关联匹配 需求规格说明书</h1>
+<div class="meta">精斗云·账无忧 出纳模块 · V1.0 · 2026-10-16</div>
 
-<h2>1. 背景与目标</h2>
-<p>银行间转账会在转出方和转入方各产生一条流水，导入后彼此独立、分别生成凭证，导致财务账重复。</p>
-<div class="card"><strong>目标：</strong>保存或导入流水后，系统自动识别同一笔转账的两条流水并标记关联，避免重复记账。</div>
-
-<h2>2. 匹配条件</h2>
-<p>两条流水<strong>同时满足</strong>以下条件即判定为关联：</p>
-<table>
-<tr><th style="width:30px">#</th><th style="width:100px">条件</th><th>说明</th></tr>
-<tr><td>1</td><td><strong>金额相等</strong></td><td>金额绝对值完全一致</td></tr>
-<tr><td>2</td><td><strong>方向相反</strong></td><td>一条收入，一条支出</td></tr>
-<tr><td>3</td><td><strong>账号交叉</strong></td><td>A的对方账号 = B的账户账号，且B的对方账号 = A的账户账号</td></tr>
-<tr><td>4</td><td><strong>日期相同</strong></td><td>日期为同一天</td></tr>
-<tr><td>5</td><td><strong>暂未关联</strong></td><td>该银行流水暂未与其他账户银行流水关联</td></tr>
+<!-- 修订记录 -->
+<h2>修订记录</h2>
+<table class="rev-table">
+<tr><th>版本</th><th>修订日期</th><th>修订内容</th><th>修订人</th></tr>
+<tr><td>V1.0</td><td>2026-10-16</td><td>初版，涵盖匹配条件、处理逻辑、消歧规则、边界场景</td><td>产品经理</td></tr>
 </table>
-<p style="font-size:12.5px;color:var(--sub)">已关联的流水不参与后续匹配。</p>
 
-<h2>3. 匹配流程</h2>
+<!-- 1 需求背景 -->
+<h2>1 需求背景介绍</h2>
+
+<h3>1.1 客户原始需求</h3>
+<p>银行间转账（如从工行A账户转到招行B账户）会在转出方和转入方各产生一条独立的银行流水。用户导入流水后，两条记录彼此独立、分别生成凭证，导致财务账出现重复记录。客户期望系统能自动识别属于同一笔转账的两条流水并标记关联，避免重复记账。</p>
+
+<h3>1.2 业务场景及痛点</h3>
+<p><strong>场景描述：</strong>用户在精斗云/账无忧中维护多个银行账户，日常通过导入银行流水进行记账。当发生账户间转账时，转出账户产生一条"支出"流水，转入账户产生一条"收入"流水，金额相同、方向相反、对方账号互指。</p>
+<p><strong>痛点：</strong>两条流水各自独立生成凭证导致同一笔转账在财务账上出现两次；用户需手动逐条比对并关联，效率低且易遗漏；多账户频繁转账时人工核对工作量巨大。</p>
+
+<h3>1.3 功能适用性评估</h3>
+<p>本需求属于规则驱动的自动匹配功能，核心是基于金额、方向、账号交叉、日期等确定性条件进行关联判定，不涉及AI模型调用。匹配逻辑清晰、规则可枚举，适合以确定性算法实现。</p>
+
+<h3>1.4 竞品分析</h3>
+<p>主流财务软件（如用友畅捷通、浪潮云等）的出纳模块普遍提供银行流水自动对账功能，但多限于银行对账单与企业日记账之间的核对，较少涉及多银行账户间转账流水的自动关联。本功能聚焦于精斗云多账户场景下的流水关联，填补这一细分需求。</p>
+
+<!-- 2 整体实现思路 -->
+<h2>2 整体实现思路</h2>
+
+<h3>2.1 业务流程图</h3>
 <div class="fc-wrap">
 <img src="flowchart.png" alt="银行流水关联匹配流程图" style="max-width:100%;height:auto">
 </div>
 
-<h3>处理逻辑</h3>
-<ol style="font-size:13px;line-height:2;padding-left:22px">
+<h3>2.2 处理逻辑详述</h3>
+<p><strong>步骤2：判断是否存在对方账号属于系统银行账户</strong></p>
+<ol class="logic-block">
 <li value="2">判断是【是否存在（对方账号∈银行账户）】
-  <ol style="list-style:none;padding-left:18px;margin:2px 0">
+  <ol class="logic-sub">
   <li>2.1 否。——结束。无需处理关联。</li>
   <li>2.2 是。记录这些流水的【日期、己方账号、对方账号、收入/支出金额、是否已经关联、凭证字号、摘要、备注】<br>
-  <span style="color:var(--sub);font-size:12px">说明：由于这些记录是刚保存的，所以这些记录的【未关联、未生成凭证】</span></li>
+  <span class="note">说明：由于这些记录是刚保存的，所以这些记录的【未关联、未生成凭证】</span></li>
   </ol>
 </li>
 <li value="3">逐一针对某笔具体的银行账户流水处理，查找未关联流水
-  <ol style="list-style:none;padding-left:18px;margin:2px 0">
+  <ol class="logic-sub">
   <li>3.1 查找对方【日期、对方账号、支出/收入金额、未关联】相同的记录有几笔
-    <ol style="list-style:none;padding-left:18px;margin:2px 0">
+    <ol class="logic-sub">
     <li>3.1.1 查找对方【日期、对方账号、支出/收入金额、未关联】相同的记录有0笔——结束。无需处理关联。</li>
     <li>3.1.2 查找对方【日期、对方账号、支出/收入金额、未关联】相同的记录有1笔
-      <ol style="list-style:none;padding-left:18px;margin:2px 0">
+      <ol class="logic-sub">
       <li>3.1.2.1 查找己方【日期、对方账号、支出/收入金额、未关联】相同的记录有1笔——匹配关系，更新凭证字号（若对方已生成凭证）</li>
       <li>3.1.2.2 查找己方【日期、对方账号、支出/收入金额、未关联】相同的记录有＞1笔——结束。暂不关联。</li>
       </ol>
     </li>
     <li>3.1.3 查找对方【日期、对方账号、支出/收入金额、未关联】相同的记录有＞1笔
-      <ol style="list-style:none;padding-left:18px;margin:2px 0">
+      <ol class="logic-sub">
       <li>3.1.3.1 对方记录数≠己方记录数——结束。暂不关联</li>
       <li>3.1.3.2 对方记录数=己方记录数
-        <ol style="list-style:none;padding-left:18px;margin:2px 0">
+        <ol class="logic-sub">
         <li>3.1.3.2.1 己方全部未生成凭证——（按时间/关键字/先后顺序）匹配关系，更新凭证字号（若对方已生成凭证）</li>
         <li>3.1.3.2.2 对方全部未生成凭证——（按时间/关键字/先后顺序）匹配关系，更新凭证字号（若己方已生成凭证）</li>
         <li>3.1.3.2.3 己方和对方都存在已生成凭证——结束。暂不关联。</li>
@@ -87,7 +106,8 @@ tr:nth-child(even){background:var(--gray)}
 </li>
 </ol>
 
-<h3>多笔消歧</h3>
+<h3>2.3 多笔消歧规则</h3>
+<p>当匹配到多笔候选流水时，按以下优先级消歧：</p>
 <table>
 <tr><th style="width:30px">#</th><th style="width:120px">条件</th><th>处理</th></tr>
 <tr><td>1</td><td>双方均有时间（时分秒）</td><td>按时间最相近匹配</td></tr>
@@ -95,8 +115,129 @@ tr:nth-child(even){background:var(--gray)}
 <tr><td>3</td><td>以上均无法确定</td><td>按先后顺序匹配第一笔</td></tr>
 </table>
 
-<h2>4. 示例</h2>
-<p style="font-size:12.5px;color:var(--sub)">匹配在流水<strong>保存或导入完成后</strong>自动触发。</p>
+<!-- 3 用户故事 -->
+<h2>3 用户故事及需求实现</h2>
+
+<h3>3.1 用户故事：银行流水自动关联匹配</h3>
+
+<h4>3.1.1 故事描述</h4>
+<table>
+<tr><th style="width:100px">属性</th><th>值</th></tr>
+<tr><td>需求编码</td><td>G001</td></tr>
+<tr><td>需求名称</td><td>银行流水关联匹配</td></tr>
+<tr><td>优先级</td><td>P1</td></tr>
+<tr><td>需求类型</td><td>新增功能</td></tr>
+<tr><td>所属模块</td><td>出纳模块</td></tr>
+</table>
+<p style="margin-top:8px">作为出纳人员，我希望在保存或导入银行流水后，系统能自动识别属于同一笔转账的两条流水并标记关联，以便避免重复记账、减少人工核对工作量。</p>
+
+<h4>3.1.2 主要业务逻辑</h4>
+<p><strong>（1）触发时机</strong></p>
+<p>匹配在流水<strong>保存或导入完成后</strong>自动触发，无需用户手动操作。纯后端处理，不涉及前端界面变更。</p>
+
+<p><strong>（2）匹配条件</strong></p>
+<p>两条流水<strong>同时满足</strong>以下全部条件即判定为关联：</p>
+<table>
+<tr><th style="width:30px">#</th><th style="width:100px">条件</th><th>说明</th></tr>
+<tr><td>1</td><td><strong>金额相等</strong></td><td>金额绝对值完全一致</td></tr>
+<tr><td>2</td><td><strong>方向相反</strong></td><td>一条收入，一条支出</td></tr>
+<tr><td>3</td><td><strong>账号交叉</strong></td><td>A的对方账号 = B的账户账号，且B的对方账号 = A的账户账号</td></tr>
+<tr><td>4</td><td><strong>日期相同</strong></td><td>日期为同一天</td></tr>
+<tr><td>5</td><td><strong>暂未关联</strong></td><td>该银行流水暂未与其他账户银行流水关联</td></tr>
+</table>
+<p class="note">已关联的流水不参与后续匹配。</p>
+
+<p><strong>（3）处理逻辑</strong></p>
+<p>见 2.2 处理逻辑详述。</p>
+
+<p><strong>（4）关联结果</strong></p>
+<p>匹配成功后仅标记关联关系，不自动生成凭证。若对方已生成凭证，则更新己方凭证字号；若双方均未生成凭证，则仅标记关联。关联操作对凭证字号的更新是单向的（仅更新未生成凭证一方）。</p>
+
+<h4>3.1.3 异常处理逻辑</h4>
+<table>
+<tr><th style="width:130px">异常场景</th><th>触发条件</th><th>系统处理</th><th>用户提示</th></tr>
+<tr><td>对方账号缺失</td><td>流水中对方账号字段为空</td><td>不满足账号交叉条件，跳过该流水</td><td>无</td></tr>
+<tr><td>对方0笔匹配</td><td>查找对方相同条件的未关联记录为0笔</td><td>结束，无需处理关联</td><td>无</td></tr>
+<tr><td>己方多笔候选</td><td>对方1笔匹配但己方有＞1笔候选</td><td>结束，暂不关联</td><td>无</td></tr>
+<tr><td>双方记录数不等</td><td>对方＞1笔且对方记录数≠己方记录数</td><td>结束，暂不关联</td><td>无</td></tr>
+<tr><td>双方均已生成凭证</td><td>己方和对方都存在已生成凭证</td><td>结束，暂不关联</td><td>无</td></tr>
+<tr><td>已关联流水被删除</td><td>用户删除已关联的某条流水</td><td>对手流水自动回退为未关联状态</td><td>无</td></tr>
+<tr><td>跨日到账</td><td>转出与转入日期不在同一天</td><td>日期不同不匹配，跳过</td><td>无</td></tr>
+</table>
+
+<h4>3.1.4 功能权限</h4>
+<p>本功能为纯后端自动处理，不涉及前端界面操作，无需额外权限配置。所有具有银行流水导入/保存权限的用户均自动触发匹配。</p>
+
+<h4>3.1.5 操作日志</h4>
+<table>
+<tr><th style="width:100px">操作对象</th><th style="width:100px">操作类型</th><th>操作日志模板</th></tr>
+<tr><td>银行流水</td><td>关联匹配</td><td>系统自动关联银行流水：己方账户[{己方账号}]与对方账户[{对方账号}]，金额{金额}，日期{日期}</td></tr>
+<tr><td>银行流水</td><td>解除关联</td><td>系统自动解除关联：流水{流水编号}因对手流水被删除回退为未关联</td></tr>
+</table>
+<p class="note">操作时间和用户账号/姓名由系统自动记录，操作人记为"系统"。</p>
+
+<h4>3.1.6 验收标准</h4>
+<table>
+<tr><th>验收项</th><th>通过标准</th><th style="width:50px">优先级</th></tr>
+<tr><td>基本关联</td><td>满足5个条件的两条流水自动关联</td><td>P0</td></tr>
+<tr><td>金额不等不关联</td><td>金额差异时不关联</td><td>P0</td></tr>
+<tr><td>方向相同不关联</td><td>同方向流水不关联</td><td>P0</td></tr>
+<tr><td>账号交叉验证</td><td>账号不交叉时不关联</td><td>P0</td></tr>
+<tr><td>跨日不关联</td><td>日期不同时不关联</td><td>P0</td></tr>
+<tr><td>已关联不参与</td><td>已关联流水不再参与新匹配</td><td>P0</td></tr>
+<tr><td>对方0笔</td><td>对方无匹配记录时不处理</td><td>P1</td></tr>
+<tr><td>对方1笔+己方1笔</td><td>正确匹配并更新凭证字号</td><td>P0</td></tr>
+<tr><td>对方1笔+己方多笔</td><td>暂不关联</td><td>P1</td></tr>
+<tr><td>对方多笔+数量不等</td><td>暂不关联</td><td>P1</td></tr>
+<tr><td>对方多笔+数量相等+己方未生成凭证</td><td>按消歧规则匹配</td><td>P1</td></tr>
+<tr><td>对方多笔+数量相等+对方未生成凭证</td><td>按消歧规则匹配</td><td>P1</td></tr>
+<tr><td>对方多笔+数量相等+双方均已生成凭证</td><td>暂不关联</td><td>P1</td></tr>
+<tr><td>消歧-时间相近</td><td>双方有时间时按时间最相近匹配</td><td>P1</td></tr>
+<tr><td>消歧-关键字匹配</td><td>无时间时按摘要/备注关键字匹配</td><td>P1</td></tr>
+<tr><td>消歧-先后顺序</td><td>无法判定时按先后顺序匹配第一笔</td><td>P2</td></tr>
+<tr><td>删除回退</td><td>已关联流水删除后对手回退未关联</td><td>P0</td></tr>
+<tr><td>对方账号缺失</td><td>不自动匹配</td><td>P1</td></tr>
+<tr><td>纯后端无UI</td><td>全流程无前端界面变更</td><td>P0</td></tr>
+</table>
+
+<!-- 4 关联性需求 -->
+<h2>4 关联性需求</h2>
+<table>
+<tr><th style="width:150px">关联模块</th><th>关联说明</th></tr>
+<tr><td>银行流水导入</td><td>导入完成后触发匹配</td></tr>
+<tr><td>银行流水保存</td><td>手动保存完成后触发匹配</td></tr>
+<tr><td>凭证管理</td><td>关联后更新凭证字号（单向）</td></tr>
+<tr><td>银行流水删除</td><td>删除已关联流水时对手回退</td></tr>
+</table>
+
+<!-- 5 非功能需求 -->
+<h2>5 非功能需求</h2>
+<table>
+<tr><th style="width:100px">维度</th><th>要求</th></tr>
+<tr><td>性能</td><td>单批次100条流水以内匹配处理≤2秒；1000条以内≤10秒</td></tr>
+<tr><td>并发</td><td>多用户同时导入时匹配任务互不干扰</td></tr>
+<tr><td>幂等性</td><td>同一批流水重复触发匹配不会产生重复关联</td></tr>
+<tr><td>数据一致性</td><td>关联标记与凭证字号更新在同一事务内完成</td></tr>
+</table>
+
+<!-- 6 安全与合规 -->
+<h2>6 安全与合规</h2>
+<p>本功能不涉及用户数据采集或外部接口调用，数据仅在系统内部银行账户间匹配，无额外安全与合规风险。</p>
+
+<!-- 7 测试注意事项 -->
+<h2>7 测试注意事项</h2>
+<p>重点覆盖多笔消歧场景：同一日期、同一金额、同方向的多笔转账。验证跨日结算场景（如T+1到账）确认不关联。验证已关联流水删除后对手正确回退。验证大批量流水导入时的性能表现。验证凭证字号更新的单向性（仅更新未生成凭证一方）。验证双方均已生成凭证时正确跳过。</p>
+
+<!-- 8 问题记录 -->
+<h2>8 问题记录</h2>
+<table>
+<tr><th style="width:30px">#</th><th>问题</th><th style="width:80px">状态</th><th>说明</th></tr>
+<tr><td>1</td><td>跨日到账是否需要放宽日期匹配窗口</td><td>待讨论</td><td>当前严格按同一天匹配，T+1场景无法关联</td></tr>
+</table>
+
+<!-- 9 示例 -->
+<h2>9 示例</h2>
+<p class="note">匹配在流水<strong>保存或导入完成后</strong>自动触发。</p>
 <div class="example">
 <table>
 <tr><th>账户</th><th>账户账号</th></tr>
@@ -124,14 +265,6 @@ tr:nth-child(even){background:var(--gray)}
 → <strong>自动关联</strong>
 </p>
 </div>
-
-<h2>5. 边界场景</h2>
-<table>
-<tr><th style="width:150px">场景</th><th>处理</th></tr>
-<tr><td>对方账号缺失</td><td>不满足账号交叉，不自动匹配</td></tr>
-<tr><td>已关联流水被删除</td><td>对手流水自动回退为未关联</td></tr>
-<tr><td>跨日到账</td><td>日期不同不匹配</td></tr>
-</table>
 
 <hr class="sep">
 <p style="font-size:12px;color:var(--sub);text-align:right">— 文档结束 —</p>
