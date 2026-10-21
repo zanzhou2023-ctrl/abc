@@ -200,6 +200,51 @@ tr:nth-child(even){background:var(--gray)}
 <tr><td>纯后端无UI</td><td>全流程无前端界面变更</td><td>P0</td></tr>
 </table>
 
+<h3>3.2 用户故事：银行账户账号必录及填写提示</h3>
+
+<h4>3.2.1 故事描述</h4>
+<table>
+<tr><th style="width:100px">属性</th><th>值</th></tr>
+<tr><td>需求编码</td><td>G002</td></tr>
+<tr><td>需求名称</td><td>银行账户账号必录及填写提示</td></tr>
+<tr><td>优先级</td><td>P0</td></tr>
+<tr><td>需求类型</td><td>增强优化</td></tr>
+<tr><td>所属模块</td><td>出纳模块-基础资料</td></tr>
+</table>
+<p style="margin-top:8px">作为出纳人员，我希望在编辑银行存款账户时，系统强制要求填写账户账号并给出准确填写的提示，以便确保银行流水关联匹配所依赖的账号信息完整准确。</p>
+
+<h4>3.2.2 主要业务逻辑</h4>
+<p><strong>（1）账户账号设为必录项</strong></p>
+<p>在银行账户基础资料（编辑银行存款账户弹窗）中，将【账户账号】字段由选填改为<strong>必录项</strong>（红色星号标记）。保存时若账户账号为空，系统阻止提交并提示必填。</p>
+
+<p><strong>（2）账户账号字段增加 tips 提示</strong></p>
+<p>在【账户账号】输入框下方增加灰色提示文字：</p>
+<div class="card">账号用于识别导入的银行回单、内部转账流水，请准确填写！</div>
+
+<p><strong>（3）界面效果</strong></p>
+<div class="fc-wrap">
+<img src="account_tips.png" alt="编辑银行存款账户-账户账号必录及tips提示" style="max-width:100%;height:auto">
+</div>
+
+<h4>3.2.3 异常处理逻辑</h4>
+<table>
+<tr><th style="width:130px">异常场景</th><th>触发条件</th><th>系统处理</th><th>用户提示</th></tr>
+<tr><td>账户账号为空</td><td>用户保存时未填写账户账号</td><td>阻止保存，焦点定位到账户账号输入框</td><td>请输入账户账号</td></tr>
+<tr><td>历史空账号数据</td><td>历史存量账户未填写账号</td><td>不影响正常使用，编辑时提示必填</td><td>编辑时账户账号显示必填标记</td></tr>
+</table>
+
+<h4>3.2.4 功能权限</h4>
+<p>与银行账户基础资料编辑权限一致，无需额外权限配置。</p>
+
+<h4>3.2.5 验收标准</h4>
+<table>
+<tr><th>验收项</th><th>通过标准</th><th style="width:50px">优先级</th></tr>
+<tr><td>账户账号必录标记</td><td>编辑弹窗中账户账号显示红色星号必填标记</td><td>P0</td></tr>
+<tr><td>账户账号为空阻止保存</td><td>未填写账户账号时无法保存，弹出必填提示</td><td>P0</td></tr>
+<tr><td>tips提示文字</td><td>账户账号下方显示"账号用于识别导入的银行回单、内部转账流水，请准确填写！"</td><td>P0</td></tr>
+<tr><td>历史数据兼容</td><td>已有空账号的历史账户可正常打开编辑，保存时提示必填</td><td>P1</td></tr>
+</table>
+
 <!-- 4 关联性需求 -->
 <h2>4 关联性需求</h2>
 <table>
