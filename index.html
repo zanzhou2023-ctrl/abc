@@ -179,7 +179,7 @@ body{display:flex;max-width:1200px;margin:0 auto}
 </ul>
 
 <p><strong>（2）处理范围</strong></p>
-<p>针对通过【智能获取流水】、【导入】及【手工新增】方式录入的银行流水，通过对方账号进行关联匹配。<strong>手工新增的流水在保存时触发匹配</strong>（若该流水尚未建立关联）。</p>
+<p>针对通过【智能获取流水】、【导入】及【手工新增】方式录入的银行流水，通过对方账号进行匹配。<strong>手工新增的流水在保存时触发匹配</strong>（若该流水尚未建立关联）。</p>
 
 <p><strong>（3）匹配条件</strong></p>
 <p>两条流水<strong>同时满足</strong>以下全部条件即判定为关联：</p>
@@ -238,10 +238,10 @@ body{display:flex;max-width:1200px;margin:0 auto}
 <table>
 <tr><th>验收项</th><th>通过标准</th><th style="width:50px">优先级</th></tr>
 <tr><td>基本关联</td><td>满足条件（同日期+同金额+收支相反+对方账号∈银行账户+未关联）的两条流水自动建立关联</td><td>P0</td></tr>
-<tr><td>金额不等不关联</td><td>金额差异时不关联</td><td>P0</td></tr>
-<tr><td>方向相同不关联</td><td>同方向流水不关联</td><td>P0</td></tr>
-<tr><td>对方账号∉银行账户</td><td>对方账号不属于系统银行账户时不关联</td><td>P0</td></tr>
-<tr><td>跨日不关联</td><td>日期不同时不关联</td><td>P0</td></tr>
+<tr><td>金额不等不建立关联</td><td>金额差异时不建立关联</td><td>P0</td></tr>
+<tr><td>方向相同不建立关联</td><td>同方向流水不建立关联</td><td>P0</td></tr>
+<tr><td>对方账号∉银行账户</td><td>对方账号不属于系统银行账户时不建立关联</td><td>P0</td></tr>
+<tr><td>跨日不建立关联</td><td>日期不同时不建立关联</td><td>P0</td></tr>
 <tr><td>已关联不参与</td><td>已关联流水不再参与新匹配</td><td>P0</td></tr>
 <tr><td>对方0笔</td><td>对方无匹配记录时不处理</td><td>P1</td></tr>
 <tr><td>对方有凭证</td><td>建立关联 + 更新己方凭证字号</td><td>P0</td></tr>
