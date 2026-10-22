@@ -64,12 +64,16 @@ body{display:flex;max-width:1200px;margin:0 auto}
 <a href="#sec3-1-4" class="l3">3.1.4 功能权限</a>
 <a href="#sec3-1-5" class="l3">3.1.5 操作日志</a>
 <a href="#sec3-1-6" class="l3">3.1.6 验收标准</a>
-<a href="#sec3-2" class="l2">3.2 银行账户账号必录及填写提示</a>
+<a href="#sec3-2" class="l2">3.2 银行账户账号填写提示</a>
 <a href="#sec3-2-1" class="l3">3.2.1 故事描述</a>
 <a href="#sec3-2-2" class="l3">3.2.2 主要业务逻辑</a>
 <a href="#sec3-2-3" class="l3">3.2.3 异常处理逻辑</a>
 <a href="#sec3-2-4" class="l3">3.2.4 功能权限</a>
 <a href="#sec3-2-5" class="l3">3.2.5 验收标准</a>
+<a href="#sec3-3" class="l2">3.3 新功能首次引导提示</a>
+<a href="#sec3-3-1" class="l3">3.3.1 故事描述</a>
+<a href="#sec3-3-2" class="l3">3.3.2 主要业务逻辑</a>
+<a href="#sec3-3-6" class="l3">3.3.6 验收标准</a>
 <a href="#sec4" class="l1">4 关联性需求</a>
 <a href="#sec5" class="l1">5 非功能需求</a>
 <a href="#sec6" class="l1">6 安全与合规</a>
@@ -297,6 +301,56 @@ body{display:flex;max-width:1200px;margin:0 auto}
 <table>
 <tr><th>验收项</th><th>通过标准</th><th style="width:50px">优先级</th></tr>
 <tr><td>tips提示文字</td><td>账户账号下方显示"账号用于识别导入的银行回单、内部转账流水，请准确填写！"</td><td>P0</td></tr>
+</table>
+
+<h3 id="sec3-3">3.3 用户故事：新功能首次引导提示</h3>
+
+<h4 id="sec3-3-1">3.3.1 故事描述</h4>
+<table>
+<tr><th style="width:100px">属性</th><th>值</th></tr>
+<tr><td>需求编码</td><td>G003</td></tr>
+<tr><td>需求名称</td><td>新功能首次引导提示</td></tr>
+<tr><td>优先级</td><td>P1</td></tr>
+<tr><td>需求类型</td><td>新增功能</td></tr>
+<tr><td>所属模块</td><td>出纳模块-银行流水</td></tr>
+</table>
+<p style="margin-top:8px">作为出纳人员，我希望在首次进入银行流水界面时收到新功能引导提示，以便快速了解银行内部转账自动关联功能及账号配置要求。</p>
+
+<h4 id="sec3-3-2">3.3.2 主要业务逻辑</h4>
+<p><strong>（1）触发条件</strong></p>
+<p>用户首次进入银行流水界面时显示引导提示，关闭后不再显示（按用户维度记忆，每个用户仅展示一次）。</p>
+
+<p><strong>（2）提示内容</strong></p>
+<p>提示采用浮层卡片形式，内容如下：</p>
+<div class="card">
+<strong>新增银行内部转账自动关联功能</strong><br>
+导入或录入的银行流水将自动匹配内部转账并建立关联。该功能依赖银行账户资料中的账号，请确保账号设置正确。<a href="#" style="color:var(--blue)">查看详细</a>
+</div>
+<p>其中"查看详细"为超链接，跳转至公司社区知识帖。</p>
+
+<p><strong>（3）交互行为</strong></p>
+<ul style="font-size:13px;line-height:2;padding-left:22px">
+<li>提示卡片有关闭按钮，点击关闭后该提示不再显示。</li>
+<li>关闭状态按用户维度持久化（如通过用户偏好或本地存储标记）。</li>
+</ul>
+
+<h4 id="sec3-3-3">3.3.3 异常处理逻辑</h4>
+<p>本需求为引导提示，无异常处理场景。</p>
+
+<h4 id="sec3-3-4">3.3.4 功能权限</h4>
+<p>与银行流水界面查看权限一致，无需额外权限配置。</p>
+
+<h4 id="sec3-3-5">3.3.5 操作日志</h4>
+<p>本需求不涉及操作日志。</p>
+
+<h4 id="sec3-3-6">3.3.6 验收标准</h4>
+<table>
+<tr><th>验收项</th><th>通过标准</th><th style="width:50px">优先级</th></tr>
+<tr><td>首次展示</td><td>用户首次进入银行流水界面时显示引导提示</td><td>P0</td></tr>
+<tr><td>关闭后不再显示</td><td>关闭提示后再次进入银行流水界面不再展示</td><td>P0</td></tr>
+<tr><td>提示内容正确</td><td>标题、正文、超链接内容与需求一致</td><td>P0</td></tr>
+<tr><td>超链接可跳转</td><td>点击"查看详细"可跳转至公司社区知识帖</td><td>P0</td></tr>
+<tr><td>按用户维度记忆</td><td>不同用户各自独立展示一次</td><td>P1</td></tr>
 </table>
 
 <!-- 4 关联性需求 -->
