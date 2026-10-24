@@ -340,25 +340,13 @@ body{display:flex;max-width:1200px;margin:0 auto}
 <tr><td>需求类型</td><td>新增功能</td></tr>
 <tr><td>所属模块</td><td>出纳模块-银行流水</td></tr>
 </table>
-<p style="margin-top:8px">作为出纳人员，我希望在首次使用产品时收到新功能引导提示（浮层提示或登录弹窗海报），以便快速了解银行内部转账自动关联功能及账号配置要求。</p>
+<p style="margin-top:8px">作为出纳人员，我希望在首次使用产品时收到新功能引导提示（登录弹窗海报），以便快速了解银行内部转账自动关联功能及账号配置要求。</p>
 
 <h4 id="sec3-3-2">3.3.2 主要业务逻辑</h4>
 <p><strong>（1）触发条件</strong></p>
-<p>用户首次使用时显示引导提示，关闭后不再显示（按用户维度记忆，每个用户仅展示一次）。具体触发时机因方案不同而异，详见下文。</p>
+<p>用户首次登录产品时显示引导提示，关闭后不再显示（按用户维度记忆，每个用户仅展示一次）。</p>
 
-<p><strong>（2）方案一：界面内浮层提示</strong></p>
-<p>用户首次进入银行流水界面时显示浮层卡片提示，内容如下：</p>
-<div class="card">
-本次更新了功能：银行流水支持自动匹配内部转账。请您确保银行账户中的账号已设置正确。<a href="#" style="color:var(--blue)">查看详细</a>
-</div>
-<p>其中"查看详细"为超链接，跳转至公司社区知识帖。</p>
-<p><strong>交互行为：</strong></p>
-<ul style="font-size:13px;line-height:2;padding-left:22px">
-<li>提示卡片有关闭按钮，点击关闭后该提示不再显示。</li>
-<li>关闭状态按用户维度持久化（如通过用户偏好或本地存储标记）。</li>
-</ul>
-
-<p><strong>（3）方案二：登录弹窗海报提示</strong></p>
+<p><strong>（2）登录弹窗海报提示</strong></p>
 <p>用户首次登录产品时弹出全屏海报弹窗，引导用户了解新功能。</p>
 <p><strong>海报文案：</strong></p>
 <div class="card" style="font-size:14px;line-height:1.8">
@@ -387,15 +375,12 @@ body{display:flex;max-width:1200px;margin:0 auto}
 
 <h4 id="sec3-3-6">3.3.6 验收标准</h4>
 <table>
-<tr><th>验收项</th><th>通过标准</th><th style="width:50px">优先级</th><th style="width:80px">适用方案</th></tr>
-<tr><td>首次展示（浮层）</td><td>用户首次进入银行流水界面时显示浮层引导提示</td><td>P0</td><td>方案一</td></tr>
-<tr><td>首次展示（弹窗）</td><td>用户首次登录产品时弹出海报弹窗</td><td>P0</td><td>方案二</td></tr>
-<tr><td>关闭后不再显示</td><td>关闭提示后再次进入不再展示</td><td>P0</td><td>方案一/二</td></tr>
-<tr><td>提示内容正确</td><td>标题、正文、超链接内容与需求一致</td><td>P0</td><td>方案一</td></tr>
-<tr><td>海报文案正确</td><td>海报标题、卖点文案与需求一致</td><td>P0</td><td>方案二</td></tr>
-<tr><td>超链接可跳转</td><td>点击"查看详细"可跳转至公司社区知识帖</td><td>P0</td><td>方案一</td></tr>
-<tr><td>立即体验按钮</td><td>点击"立即体验"后进入银行流水功能界面</td><td>P0</td><td>方案二</td></tr>
-<tr><td>按用户维度记忆</td><td>不同用户各自独立展示一次</td><td>P1</td><td>方案一/二</td></tr>
+<tr><th>验收项</th><th>通过标准</th><th style="width:50px">优先级</th></tr>
+<tr><td>首次展示</td><td>用户首次登录产品时弹出海报弹窗</td><td>P0</td></tr>
+<tr><td>关闭后不再显示</td><td>关闭提示后再次进入不再展示</td><td>P0</td></tr>
+<tr><td>海报文案正确</td><td>海报标题、卖点文案与需求一致</td><td>P0</td></tr>
+<tr><td>立即体验按钮</td><td>点击"立即体验"后进入银行流水功能界面</td><td>P0</td></tr>
+<tr><td>按用户维度记忆</td><td>不同用户各自独立展示一次</td><td>P1</td></tr>
 </table>
 
 <!-- 4 关联性需求 -->
